@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'ScrollingAboutWindow' target in the 'ScrollingAboutWindow' project
+//
+
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+#endif
