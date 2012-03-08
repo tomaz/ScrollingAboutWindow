@@ -13,6 +13,9 @@
 		73F2280E1508A0110036BD5B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 73F2280C1508A0110036BD5B /* Credits.rtf */; };
 		73F228111508A0110036BD5B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F228101508A0110036BD5B /* AppDelegate.m */; };
 		73F228141508A0110036BD5B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F228121508A0110036BD5B /* MainMenu.xib */; };
+		73F2281B1508A0530036BD5B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F2281A1508A0530036BD5B /* QuartzCore.framework */; };
+		73F2281F1508A06B0036BD5B /* AboutWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2281D1508A06B0036BD5B /* AboutWindowController.m */; };
+		73F228201508A06B0036BD5B /* AboutWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 73F2281E1508A06B0036BD5B /* AboutWindow.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,14 +24,18 @@
 		73F228001508A0110036BD5B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		73F228011508A0110036BD5B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		73F228021508A0110036BD5B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		73F228051508A0110036BD5B /* ScrollingAboutWindow-Info.plist */ = {isa = PBXFileReference; path = "ScrollingAboutWindow-Info.plist"; sourceTree = "<group>"; };
+		73F228051508A0110036BD5B /* ScrollingAboutWindow-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ScrollingAboutWindow-Info.plist"; sourceTree = "<group>"; };
 		73F228071508A0110036BD5B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		73F228091508A0110036BD5B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		73F2280B1508A0110036BD5B /* ScrollingAboutWindow-Prefix.pch */ = {isa = PBXFileReference; path = "ScrollingAboutWindow-Prefix.pch"; sourceTree = "<group>"; };
+		73F2280B1508A0110036BD5B /* ScrollingAboutWindow-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ScrollingAboutWindow-Prefix.pch"; sourceTree = "<group>"; };
 		73F2280D1508A0110036BD5B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		73F2280F1508A0110036BD5B /* AppDelegate.h */ = {isa = PBXFileReference; path = AppDelegate.h; sourceTree = "<group>"; };
+		73F2280F1508A0110036BD5B /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		73F228101508A0110036BD5B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		73F228131508A0110036BD5B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		73F2281A1508A0530036BD5B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		73F2281C1508A06B0036BD5B /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = AboutWindowController.h; sourceTree = "<group>"; };
+		73F2281D1508A06B0036BD5B /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
+		73F2281E1508A06B0036BD5B /* AboutWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73F2281B1508A0530036BD5B /* QuartzCore.framework in Frameworks */,
 				73F227FE1508A0110036BD5B /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				73F227FD1508A0110036BD5B /* Cocoa.framework */,
+				73F2281A1508A0530036BD5B /* QuartzCore.framework */,
 				73F227FF1508A0110036BD5B /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -82,9 +91,12 @@
 		73F228031508A0110036BD5B /* ScrollingAboutWindow */ = {
 			isa = PBXGroup;
 			children = (
+				73F228121508A0110036BD5B /* MainMenu.xib */,
 				73F2280F1508A0110036BD5B /* AppDelegate.h */,
 				73F228101508A0110036BD5B /* AppDelegate.m */,
-				73F228121508A0110036BD5B /* MainMenu.xib */,
+				73F2281E1508A06B0036BD5B /* AboutWindow.xib */,
+				73F2281C1508A06B0036BD5B /* AboutWindowController.h */,
+				73F2281D1508A06B0036BD5B /* AboutWindowController.m */,
 				73F228041508A0110036BD5B /* Supporting Files */,
 			);
 			path = ScrollingAboutWindow;
@@ -155,6 +167,7 @@
 				73F228081508A0110036BD5B /* InfoPlist.strings in Resources */,
 				73F2280E1508A0110036BD5B /* Credits.rtf in Resources */,
 				73F228141508A0110036BD5B /* MainMenu.xib in Resources */,
+				73F228201508A06B0036BD5B /* AboutWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +180,7 @@
 			files = (
 				73F2280A1508A0110036BD5B /* main.m in Sources */,
 				73F228111508A0110036BD5B /* AppDelegate.m in Sources */,
+				73F2281F1508A06B0036BD5B /* AboutWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +302,7 @@
 				73F228191508A0110036BD5B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
