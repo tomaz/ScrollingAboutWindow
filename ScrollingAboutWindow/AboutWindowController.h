@@ -19,3 +19,9 @@
 @property (weak) IBOutlet NSView *creditsView;
 
 @end
+
+#pragma mark -
+
+@interface BackgroundColorView : NSView
+@property (nonatomic, strong) NSColor *gb_backgroundColor;
+@end

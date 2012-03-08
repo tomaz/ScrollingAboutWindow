@@ -217,7 +217,7 @@
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="787351964"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
-							<string key="NSClassName">NSView</string>
+							<string key="NSClassName">BackgroundColorView</string>
 						</object>
 						<object class="NSButton" id="701293670">
 							<reference key="NSNextResponder" ref="564727303"/>
@@ -225,6 +225,7 @@
 							<string key="NSFrame">{{385, 0}, {95, 28}}</string>
 							<reference key="NSSuperview" ref="564727303"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="536915794">
@@ -1162,6 +1163,14 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/AboutWindowController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">BackgroundColorView</string>
+					<string key="superclassName">NSView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/BackgroundColorView.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
