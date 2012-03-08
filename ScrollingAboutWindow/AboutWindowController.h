@@ -10,4 +10,12 @@
 
 @interface AboutWindowController : NSWindowController
 
+- (IBAction)getInTouch:(id)sender;
+
+@property (weak) IBOutlet NSTextField *applicationNameLabel;
+@property (weak) IBOutlet NSTextField *applicationVersionLabel;
+@property (weak) IBOutlet NSTextField *punchLineLabel;
+@property (weak) IBOutlet NSTextField *copyrightLabel;
+@property (weak) IBOutlet NSView *creditsView;
+
 @end
