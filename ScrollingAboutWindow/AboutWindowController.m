@@ -22,6 +22,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 @property (nonatomic, readonly) NSString *applicationBuildNumberString;
 @property (nonatomic, readonly) NSString *applicationCopyrightString;
 @property (nonatomic, assign) BOOL isCreditsAnimationActive;
+@property (nonatomic, readwrite) CGFloat scaleFactor;
 @end
 
 #pragma mark -
@@ -45,6 +46,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	CAGradientLayer *_creditsTopFadeLayer;
 	CAGradientLayer *_creditsBottomFadeLayer;
 	CATextLayer *_creditsTextLayer;
+	CGFloat _scaleFactor;
 }
 
 @synthesize isCreditsAnimationActive;
@@ -53,6 +55,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 @synthesize punchLineLabel;
 @synthesize copyrightLabel;
 @synthesize creditsView;
+@synthesize scaleFactor = _scaleFactor;
 
 #pragma mark - Initialization & disposal
 
@@ -73,6 +76,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	NSString *versionString = [NSString stringWithFormat:versionFormat, self.applicationVersionString, self.applicationBuildNumberString];
 	self.applicationNameLabel.stringValue = self.applicationNameString;
 	self.punchLineLabel.stringValue = NSLocalizedString(@"Scrolling about window demonstrator!", nil);
+	self.scaleFactor = [[creditsView window] backingScaleFactor];
 	self.creditsView.layer = self.creditsRootLayer;
 	self.creditsView.wantsLayer = YES;
 	[self.applicationVersionLabel.cell setPlaceholderString:versionString];
@@ -174,6 +178,9 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsTextLayer.string = credits;
 	_creditsTextLayer.anchorPoint = CGPointMake(0.0, 0.0);
 	_creditsTextLayer.frame = CGRectMake(0.0, 0.0, size.width, size.height);
+
+	_creditsTextLayer.contentsScale = self.scaleFactor;
+	
 	return _creditsTextLayer;
 }
 
@@ -185,6 +192,9 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsTopFadeLayer = [CAGradientLayer layer];
 	_creditsTopFadeLayer.colors = [NSArray arrayWithObjects:(__bridge id)color1, (__bridge id)color2, nil];
 	_creditsTopFadeLayer.frame = CGRectMake(0.0, 0.0, self.creditsView.bounds.size.width, height);
+
+	_creditsTopFadeLayer.contentsScale = self.scaleFactor;
+	
 	return _creditsTopFadeLayer;
 }
 
@@ -196,6 +206,9 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsBottomFadeLayer = [CAGradientLayer layer];
 	_creditsBottomFadeLayer.colors = [NSArray arrayWithObjects:(__bridge id)color2, (__bridge id)color1, nil];
 	_creditsBottomFadeLayer.frame = CGRectMake(0.0, self.creditsView.bounds.size.height - height, self.creditsView.bounds.size.width, height);
+	
+	_creditsBottomFadeLayer.contentsScale = self.scaleFactor;
+	
 	return _creditsBottomFadeLayer;
 }
 
@@ -205,6 +218,9 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	[_creditsRootLayer addSublayer:self.creditsTextLayer];
 	[_creditsRootLayer addSublayer:self.creditsTopFadeLayer];
 	[_creditsRootLayer addSublayer:self.creditsBottomFadeLayer];
+	
+	_creditsRootLayer.contentsScale = self.scaleFactor;
+
 	return _creditsRootLayer;
 }
 
