@@ -142,7 +142,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 		if (!self.isCreditsAnimationActive) return;
 		[self startCreditsScrollAnimation];
 	}];
-	creditsLayer.position = CGPointMake(0.0, viewHeight - fadeCompensation);
+	creditsLayer.position = CGPointMake(0.0, viewHeight + fadeCompensation);
 	[CATransaction commit];
 }
 
@@ -158,12 +158,12 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	
 	[CATransaction begin];
 	[CATransaction setAnimationDuration:0.0];
-	creditsLayer.position = CGPointMake(0.0, -textHeight + fadeCompensation);
+	creditsLayer.position = CGPointMake(0.0, -textHeight - fadeCompensation);
 	[CATransaction commit];
 }
 
 - (CGFloat)creditsFadeHeightCompensation {
-	return self.creditsTopFadeLayer.frame.size.height - 2.0;
+	return self.creditsTopFadeLayer.frame.size.height;
 }
 
 #pragma mark - Core Animation layers
