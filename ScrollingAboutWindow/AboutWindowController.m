@@ -10,6 +10,7 @@
 #import "AboutWindowController.h"
 
 static CGFloat kAboutWindowCreditsAnimationSpeed = 2.0; // Points per second
+static CGFloat kAboutWindowCreditsAssumedFPS = 60.0; // Assumed frames per second
 static CGFloat kAboutWindowCreditsFadeHeight = 6.0;
 static CGColorRef kAboutWindowCreditsFadeColor1 = NULL;
 static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
@@ -37,6 +38,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 @property (nonatomic, readonly) CAGradientLayer *creditsTopFadeLayer;
 @property (nonatomic, readonly) CAGradientLayer *creditsBottomFadeLayer;
 @property (nonatomic, readonly) CATextLayer *creditsTextLayer;
+@property (nonatomic, readonly) CIFilter *motionBlurFilter;
 @end
 
 #pragma mark -
@@ -46,6 +48,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	CAGradientLayer *_creditsTopFadeLayer;
 	CAGradientLayer *_creditsBottomFadeLayer;
 	CATextLayer *_creditsTextLayer;
+	CIFilter *_motionBlurFilter;
 	CGFloat _scaleFactor;
 }
 
@@ -166,6 +169,30 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	return self.creditsTopFadeLayer.frame.size.height;
 }
 
+#pragma mark - Filters
+
+- (CGFloat)calculateBlurDistanceForScale:(CGFloat)scale {
+    CGFloat blurDistance;
+	
+    blurDistance = ((kAboutWindowCreditsAnimationSpeed / kAboutWindowCreditsAssumedFPS) * scale);
+	blurDistance = MAX(0.5, blurDistance); // We need least half a real pixel of blur or we might get flicker
+	
+    return blurDistance;
+}
+
+- (CIFilter *)motionBlurFilter {
+	if (_motionBlurFilter) return _motionBlurFilter;
+	// The blurDistance is based on the distance traveled per frame
+	CGFloat blurDistance = [self calculateBlurDistanceForScale:_creditsTextLayer.contentsScale]; 
+	_motionBlurFilter = [CIFilter filterWithName:@"CIMotionBlur"];
+	[_motionBlurFilter setDefaults];
+	[_motionBlurFilter setValue:[NSNumber numberWithFloat:blurDistance] forKey:@"inputRadius"];
+	[_motionBlurFilter setValue:[NSNumber numberWithFloat:(M_PI/2)] forKey:@"inputAngle"]; // 90°
+	_motionBlurFilter.name = @"motionBlur";
+
+	return _motionBlurFilter;
+}
+
 #pragma mark - Core Animation layers
 
 - (CATextLayer *)creditsTextLayer {
@@ -181,6 +208,9 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 
 	_creditsTextLayer.contentsScale = self.scaleFactor;
 	_creditsTextLayer.delegate = self;
+	
+	// Adding motion blur filter to reduce pixel crawl/flicker
+	_creditsTextLayer.filters = [NSArray arrayWithObject:self.motionBlurFilter];
 	
 	return _creditsTextLayer;
 }
@@ -249,6 +279,10 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 {
 	if (layer == _creditsRootLayer) {
 		_scaleFactor = newScale; // Just to keep the value consistent
+	}
+	else if (layer == _creditsTextLayer) {
+		CGFloat blurDistance = [self calculateBlurDistanceForScale:newScale];
+		[_motionBlurFilter setValue:[NSNumber numberWithFloat:blurDistance] forKey:@"inputRadius"];
 	}
 	
 	return YES;
