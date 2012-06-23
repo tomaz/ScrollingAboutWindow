@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AboutWindowController.h"
 
-static CGFloat kAboutWindowCreditsAnimationDuration = 30.0;
+static CGFloat kAboutWindowCreditsAnimationSpeed = 2.0; // Points per second
 static CGFloat kAboutWindowCreditsFadeHeight = 6.0;
 static CGColorRef kAboutWindowCreditsFadeColor1 = NULL;
 static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
@@ -136,7 +136,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	
 	// Animate to top and execute animation again - resulting in endless loop.
 	[CATransaction begin];
-	[CATransaction setAnimationDuration:kAboutWindowCreditsAnimationDuration];
+	[CATransaction setAnimationDuration:(viewHeight / kAboutWindowCreditsAnimationSpeed)];
 	[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
 	[CATransaction setCompletionBlock:^{ 
 		if (!self.isCreditsAnimationActive) return;
