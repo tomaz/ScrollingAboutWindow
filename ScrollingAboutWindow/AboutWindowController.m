@@ -180,6 +180,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsTextLayer.frame = CGRectMake(0.0, 0.0, size.width, size.height);
 
 	_creditsTextLayer.contentsScale = self.scaleFactor;
+	_creditsTextLayer.delegate = self;
 	
 	return _creditsTextLayer;
 }
@@ -194,6 +195,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsTopFadeLayer.frame = CGRectMake(0.0, 0.0, self.creditsView.bounds.size.width, height);
 
 	_creditsTopFadeLayer.contentsScale = self.scaleFactor;
+	_creditsTopFadeLayer.delegate = self;
 	
 	return _creditsTopFadeLayer;
 }
@@ -208,6 +210,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsBottomFadeLayer.frame = CGRectMake(0.0, self.creditsView.bounds.size.height - height, self.creditsView.bounds.size.width, height);
 	
 	_creditsBottomFadeLayer.contentsScale = self.scaleFactor;
+	_creditsBottomFadeLayer.delegate = self;
 	
 	return _creditsBottomFadeLayer;
 }
@@ -220,6 +223,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	[_creditsRootLayer addSublayer:self.creditsBottomFadeLayer];
 	
 	_creditsRootLayer.contentsScale = self.scaleFactor;
+	_creditsRootLayer.delegate = self;
 
 	return _creditsRootLayer;
 }
@@ -239,6 +243,15 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
     } while (offset < [string length]);
     CFRelease(typesetter);
     return CGSizeMake(width, ceil(height));
+}
+
+- (BOOL)layer:(CALayer *)layer shouldInheritContentsScale:(CGFloat)newScale fromWindow:(NSWindow *)window
+{
+	if (layer == _creditsRootLayer) {
+		_scaleFactor = newScale; // Just to keep the value consistent
+	}
+	
+	return YES;
 }
 
 @end
