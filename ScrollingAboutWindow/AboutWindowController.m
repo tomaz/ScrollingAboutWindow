@@ -22,7 +22,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 @property (nonatomic, readonly) NSString *applicationBuildNumberString;
 @property (nonatomic, readonly) NSString *applicationCopyrightString;
 @property (nonatomic, assign) BOOL isCreditsAnimationActive;
-@property (nonatomic, readwrite) CGFloat scaleFactor;
+@property (nonatomic, readonly) CGFloat scaleFactor;
 @end
 
 #pragma mark -
@@ -76,7 +76,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	NSString *versionString = [NSString stringWithFormat:versionFormat, self.applicationVersionString, self.applicationBuildNumberString];
 	self.applicationNameLabel.stringValue = self.applicationNameString;
 	self.punchLineLabel.stringValue = NSLocalizedString(@"Scrolling about window demonstrator!", nil);
-	self.scaleFactor = [[creditsView window] backingScaleFactor];
+	_scaleFactor = [[creditsView window] backingScaleFactor];
 	self.creditsView.layer = self.creditsRootLayer;
 	self.creditsView.wantsLayer = YES;
 	[self.applicationVersionLabel.cell setPlaceholderString:versionString];
