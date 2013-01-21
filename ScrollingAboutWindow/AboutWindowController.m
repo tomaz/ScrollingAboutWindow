@@ -9,7 +9,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "AboutWindowController.h"
 
-static CGFloat kAboutWindowCreditsAnimationDuration = 30.0;
+static CGFloat kAboutWindowCreditsAnimationSpeed = 2.0; // Points per second
+static CGFloat kAboutWindowCreditsAssumedFPS = 60.0; // Assumed frames per second
 static CGFloat kAboutWindowCreditsFadeHeight = 6.0;
 static CGColorRef kAboutWindowCreditsFadeColor1 = NULL;
 static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
@@ -22,6 +23,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 @property (nonatomic, readonly) NSString *applicationBuildNumberString;
 @property (nonatomic, readonly) NSString *applicationCopyrightString;
 @property (nonatomic, assign) BOOL isCreditsAnimationActive;
+@property (nonatomic, readonly) CGFloat scaleFactor;
 @end
 
 #pragma mark -
@@ -36,6 +38,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 @property (nonatomic, readonly) CAGradientLayer *creditsTopFadeLayer;
 @property (nonatomic, readonly) CAGradientLayer *creditsBottomFadeLayer;
 @property (nonatomic, readonly) CATextLayer *creditsTextLayer;
+@property (nonatomic, readonly) CIFilter *motionBlurFilter;
 @end
 
 #pragma mark -
@@ -45,6 +48,8 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	CAGradientLayer *_creditsTopFadeLayer;
 	CAGradientLayer *_creditsBottomFadeLayer;
 	CATextLayer *_creditsTextLayer;
+	CIFilter *_motionBlurFilter;
+	CGFloat _scaleFactor;
 }
 
 @synthesize isCreditsAnimationActive;
@@ -53,6 +58,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 @synthesize punchLineLabel;
 @synthesize copyrightLabel;
 @synthesize creditsView;
+@synthesize scaleFactor = _scaleFactor;
 
 #pragma mark - Initialization & disposal
 
@@ -73,6 +79,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	NSString *versionString = [NSString stringWithFormat:versionFormat, self.applicationVersionString, self.applicationBuildNumberString];
 	self.applicationNameLabel.stringValue = self.applicationNameString;
 	self.punchLineLabel.stringValue = NSLocalizedString(@"Scrolling about window demonstrator!", nil);
+	_scaleFactor = [[creditsView window] backingScaleFactor];
 	self.creditsView.layer = self.creditsRootLayer;
 	self.creditsView.wantsLayer = YES;
 	[self.applicationVersionLabel.cell setPlaceholderString:versionString];
@@ -132,13 +139,13 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	
 	// Animate to top and execute animation again - resulting in endless loop.
 	[CATransaction begin];
-	[CATransaction setAnimationDuration:kAboutWindowCreditsAnimationDuration];
+	[CATransaction setAnimationDuration:(viewHeight / kAboutWindowCreditsAnimationSpeed)];
 	[CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear]];
 	[CATransaction setCompletionBlock:^{ 
 		if (!self.isCreditsAnimationActive) return;
 		[self startCreditsScrollAnimation];
 	}];
-	creditsLayer.position = CGPointMake(0.0, viewHeight - fadeCompensation);
+	creditsLayer.position = CGPointMake(0.0, viewHeight + fadeCompensation);
 	[CATransaction commit];
 }
 
@@ -154,12 +161,36 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	
 	[CATransaction begin];
 	[CATransaction setAnimationDuration:0.0];
-	creditsLayer.position = CGPointMake(0.0, -textHeight + fadeCompensation);
+	creditsLayer.position = CGPointMake(0.0, -textHeight - fadeCompensation);
 	[CATransaction commit];
 }
 
 - (CGFloat)creditsFadeHeightCompensation {
-	return self.creditsTopFadeLayer.frame.size.height - 2.0;
+	return self.creditsTopFadeLayer.frame.size.height;
+}
+
+#pragma mark - Filters
+
+- (CGFloat)calculateBlurDistanceForScale:(CGFloat)scale {
+    CGFloat blurDistance;
+	
+    blurDistance = ((kAboutWindowCreditsAnimationSpeed / kAboutWindowCreditsAssumedFPS) * scale);
+	blurDistance = MAX(0.5, blurDistance); // We need least half a real pixel of blur or we might get flicker
+	
+    return blurDistance;
+}
+
+- (CIFilter *)motionBlurFilter {
+	if (_motionBlurFilter) return _motionBlurFilter;
+	// The blurDistance is based on the distance traveled per frame
+	CGFloat blurDistance = [self calculateBlurDistanceForScale:_creditsTextLayer.contentsScale]; 
+	_motionBlurFilter = [CIFilter filterWithName:@"CIMotionBlur"];
+	[_motionBlurFilter setDefaults];
+	[_motionBlurFilter setValue:[NSNumber numberWithFloat:blurDistance] forKey:@"inputRadius"];
+	[_motionBlurFilter setValue:[NSNumber numberWithFloat:(M_PI/2)] forKey:@"inputAngle"]; // 90°
+	_motionBlurFilter.name = @"motionBlur";
+
+	return _motionBlurFilter;
 }
 
 #pragma mark - Core Animation layers
@@ -174,6 +205,13 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsTextLayer.string = credits;
 	_creditsTextLayer.anchorPoint = CGPointMake(0.0, 0.0);
 	_creditsTextLayer.frame = CGRectMake(0.0, 0.0, size.width, size.height);
+
+	_creditsTextLayer.contentsScale = self.scaleFactor;
+	_creditsTextLayer.delegate = self;
+	
+	// Adding motion blur filter to reduce pixel crawl/flicker
+	_creditsTextLayer.filters = [NSArray arrayWithObject:self.motionBlurFilter];
+	
 	return _creditsTextLayer;
 }
 
@@ -185,6 +223,10 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsTopFadeLayer = [CAGradientLayer layer];
 	_creditsTopFadeLayer.colors = [NSArray arrayWithObjects:(__bridge id)color1, (__bridge id)color2, nil];
 	_creditsTopFadeLayer.frame = CGRectMake(0.0, 0.0, self.creditsView.bounds.size.width, height);
+
+	_creditsTopFadeLayer.contentsScale = self.scaleFactor;
+	_creditsTopFadeLayer.delegate = self;
+	
 	return _creditsTopFadeLayer;
 }
 
@@ -196,6 +238,10 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	_creditsBottomFadeLayer = [CAGradientLayer layer];
 	_creditsBottomFadeLayer.colors = [NSArray arrayWithObjects:(__bridge id)color2, (__bridge id)color1, nil];
 	_creditsBottomFadeLayer.frame = CGRectMake(0.0, self.creditsView.bounds.size.height - height, self.creditsView.bounds.size.width, height);
+	
+	_creditsBottomFadeLayer.contentsScale = self.scaleFactor;
+	_creditsBottomFadeLayer.delegate = self;
+	
 	return _creditsBottomFadeLayer;
 }
 
@@ -205,6 +251,10 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	[_creditsRootLayer addSublayer:self.creditsTextLayer];
 	[_creditsRootLayer addSublayer:self.creditsTopFadeLayer];
 	[_creditsRootLayer addSublayer:self.creditsBottomFadeLayer];
+	
+	_creditsRootLayer.contentsScale = self.scaleFactor;
+	_creditsRootLayer.delegate = self;
+
 	return _creditsRootLayer;
 }
 
@@ -223,6 +273,19 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
     } while (offset < [string length]);
     CFRelease(typesetter);
     return CGSizeMake(width, ceil(height));
+}
+
+- (BOOL)layer:(CALayer *)layer shouldInheritContentsScale:(CGFloat)newScale fromWindow:(NSWindow *)window
+{
+	if (layer == _creditsRootLayer) {
+		_scaleFactor = newScale; // Just to keep the value consistent
+	}
+	else if (layer == _creditsTextLayer) {
+		CGFloat blurDistance = [self calculateBlurDistanceForScale:newScale];
+		[_motionBlurFilter setValue:[NSNumber numberWithFloat:blurDistance] forKey:@"inputRadius"];
+	}
+	
+	return YES;
 }
 
 @end
