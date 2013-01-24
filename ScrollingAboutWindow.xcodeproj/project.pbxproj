@@ -33,7 +33,7 @@
 		73F228101508A0110036BD5B /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		73F228131508A0110036BD5B /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		73F2281A1508A0530036BD5B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		73F2281C1508A06B0036BD5B /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = AboutWindowController.h; sourceTree = "<group>"; };
+		73F2281C1508A06B0036BD5B /* AboutWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutWindowController.h; sourceTree = "<group>"; };
 		73F2281D1508A06B0036BD5B /* AboutWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutWindowController.m; sourceTree = "<group>"; };
 		73F2281E1508A06B0036BD5B /* AboutWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AboutWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -140,7 +140,7 @@
 		73F227F01508A0110036BD5B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = 73F227F31508A0110036BD5B /* Build configuration list for PBXProject "ScrollingAboutWindow" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -264,6 +264,7 @@
 		73F228181508A0110036BD5B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ScrollingAboutWindow/ScrollingAboutWindow-Prefix.pch";
 				INFOPLIST_FILE = "ScrollingAboutWindow/ScrollingAboutWindow-Info.plist";
@@ -275,6 +276,7 @@
 		73F228191508A0110036BD5B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ScrollingAboutWindow/ScrollingAboutWindow-Prefix.pch";
 				INFOPLIST_FILE = "ScrollingAboutWindow/ScrollingAboutWindow-Info.plist";
