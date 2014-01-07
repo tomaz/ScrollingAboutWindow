@@ -21,41 +21,18 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 @property (nonatomic, readonly) NSString *applicationVersionString;
 @property (nonatomic, readonly) NSString *applicationBuildNumberString;
 @property (nonatomic, readonly) NSString *applicationCopyrightString;
+@property (nonatomic, strong) CALayer *creditsRootLayer;
+@property (nonatomic, strong) CAGradientLayer *creditsTopFadeLayer;
+@property (nonatomic, strong) CAGradientLayer *creditsBottomFadeLayer;
+@property (nonatomic, strong) CATextLayer *creditsTextLayer;
 @property (nonatomic, assign) BOOL isCreditsAnimationActive;
+@property (nonatomic, readonly) CGFloat creditsFadeHeightCompensation;
 @property (nonatomic, readonly) CGFloat scaleFactor;
 @end
 
 #pragma mark -
 
-@interface AboutWindowController (ScrollingCredits)
-- (void)startCreditsScrollAnimation;
-- (void)stopCreditsScrollAnimation;
-- (void)resetCreditsScrollPosition;
-- (CGSize)sizeForAttributedString:(NSAttributedString *)string inWidth:(CGFloat)width;
-@property (nonatomic, readonly) CGFloat creditsFadeHeightCompensation;
-@property (nonatomic, readonly) CALayer *creditsRootLayer;
-@property (nonatomic, readonly) CAGradientLayer *creditsTopFadeLayer;
-@property (nonatomic, readonly) CAGradientLayer *creditsBottomFadeLayer;
-@property (nonatomic, readonly) CATextLayer *creditsTextLayer;
-@end
-
-#pragma mark -
-
-@implementation AboutWindowController {
-	CALayer *_creditsRootLayer;
-	CAGradientLayer *_creditsTopFadeLayer;
-	CAGradientLayer *_creditsBottomFadeLayer;
-	CATextLayer *_creditsTextLayer;
-	CGFloat _scaleFactor;
-}
-
-@synthesize isCreditsAnimationActive;
-@synthesize applicationNameLabel;
-@synthesize applicationVersionLabel;
-@synthesize punchLineLabel;
-@synthesize copyrightLabel;
-@synthesize creditsView;
-@synthesize scaleFactor = _scaleFactor;
+@implementation AboutWindowController
 
 #pragma mark - Initialization & disposal
 
@@ -76,7 +53,7 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 	NSString *versionString = [NSString stringWithFormat:versionFormat, self.applicationVersionString, self.applicationBuildNumberString];
 	self.applicationNameLabel.stringValue = self.applicationNameString;
 	self.punchLineLabel.stringValue = NSLocalizedString(@"Scrolling about window demonstrator!", nil);
-	_scaleFactor = [[creditsView window] backingScaleFactor];
+	_scaleFactor = [[self.creditsView window] backingScaleFactor];
 	self.creditsView.layer = self.creditsRootLayer;
 	self.creditsView.wantsLayer = YES;
 	[self.applicationVersionLabel.cell setPlaceholderString:versionString];
@@ -116,12 +93,6 @@ static CGColorRef kAboutWindowCreditsFadeColor2 = NULL;
 - (NSString *)applicationCopyrightString {
 	return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSHumanReadableCopyright"];
 }
-
-@end
-
-#pragma mark -
-
-@implementation AboutWindowController (ScrollingCredits)
 
 #pragma mark - Higher level 
 
